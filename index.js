@@ -1,11 +1,21 @@
-const getPlatformUrl = require('./src/platform')
 const inquirer = require('inquirer');
+const {execFile} = require('child_process');
 const Conf = require('conf');
+
+const getPlatformUrl = require('./src/platform')
 const config = new Conf({
 	configName: 'live-url'
 });
 
 const PotPlayer = config.get('PotPlayer')
+
+const setConfig = [
+	{
+		type: 'input',
+		name: 'PotPlayer',
+		message: "PotPlayer播放器所在路径，如 C:\\Program Files\\DAUM\\PotPlayer\\PotPlayerMini64.exe"
+	}
+]
 const selectLive = [
 	{
 		type: 'list',
@@ -23,26 +33,16 @@ const selectLive = [
 
 async function runPotPlayer({platform, room}) {
 	const url = await getPlatformUrl[platform](room);
+	execFile(PotPlayer, [url], (err, stdout, stderr) => {
+		if (err) return console.log(err);
+	});
 }
 
-if (PotPlayer)
-	inquirer
-		.prompt(selectLive)
-		.then(ans => {
-			runPotPlayer(ans)
-		});
-
-else
-	inquirer
-		.prompt([
-			{
-				type: 'input',
-				name: 'PotPlayer',
-				message: "PotPlayer播放器所在路径，如 C:\\Program Files\\DAUM\\PotPlayer\\PotPlayerMini64.exe"
-			}
-		])
-		.then(ans => {
-			runPotPlayer(ans)
-		});
+const prompt = (PotPlayer ? [] : setConfig).concat(selectLive)
+inquirer
+	.prompt(prompt)
+	.then(ans => {
+		runPotPlayer(ans)
+	});
 
 
