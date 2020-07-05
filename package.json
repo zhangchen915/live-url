@@ -1,0 +1,23 @@
+{
+	"name": "live-url",
+	"version": "0.0.0",
+	"license": "MIT",
+	"bin": "index.js",
+	"engines": {
+		"node": ">=8"
+	},
+	"scripts": {
+		"test": "xo && ava"
+	},
+	"files": [
+		"cli.js",
+		"ui.js"
+	],
+	"dependencies": {
+		"conf": "^7.0.1",
+		"inquirer": "^7.3.0",
+		"node-fetch": "^2.6.0"
+	},
+	"devDependencies": {
+	}
+}
