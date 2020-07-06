@@ -1,5 +1,5 @@
 const inquirer = require('inquirer');
-const {execFile} = require('child_process');
+const cp = require('child_process');
 const Conf = require('conf');
 
 const getPlatformUrl = require('./src/platform')
@@ -21,7 +21,7 @@ const selectLive = [
 		type: 'list',
 		name: 'platform',
 		message: "选择直播平台",
-		choices: [{name: '斗鱼', value: 'DY'}],
+		choices: [{name: '斗鱼', value: 'DY'}, {name: '虎牙', value: 'HY'}],
 	},
 	{
 		type: 'input',
@@ -33,16 +33,14 @@ const selectLive = [
 
 async function runPotPlayer({platform, room}) {
 	const url = await getPlatformUrl[platform](room);
-	execFile(PotPlayer, [url], (err, stdout, stderr) => {
-		if (err) return console.log(err);
+	if(!url) console.log('直播地址获取失败')
+	console.log('直播真实地址是 ', url)
+	const player = cp.spawn(PotPlayer, [url],{
+		detached: true,
+		stdio: 'ignore'
 	});
+	player.unref();
 }
 
 const prompt = (PotPlayer ? [] : setConfig).concat(selectLive)
-inquirer
-	.prompt(prompt)
-	.then(ans => {
-		runPotPlayer(ans)
-	});
-
-
+inquirer.prompt(prompt).then(ans => runPotPlayer(ans));

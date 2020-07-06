@@ -1,3 +1,4 @@
 module.exports = {
-	DY:  require('./douyu')
+	DY:  require('./douyu'),
+	HY:  require('./huya')
 }
